@@ -1,12 +1,10 @@
 <?php
-use think\facade\Route;
-
-Route::any( 'doc$', function () {
+\think\facade\Route::any( 'doc$', function () {
     return redirect( '/doc/document?name=explain' );
 } );
-Route::get( 'doc/assets', "\\OkCoder\\ApiDoc\\Controller@assets", [ 'deny_ext' => 'php|.htacess' ] );
-Route::get( 'doc/module', "\\OkCoder\\ApiDoc\\Controller@module" );
-Route::get( 'doc/action', "\\OkCoder\\ApiDoc\\Controller@action" );
-Route::get( 'doc/document', "\\OkCoder\\ApiDoc\\Controller@document" );
-Route::any( 'doc/login$', "\\OkCoder\\ApiDoc\\Controller@login" );
-Route::any( 'doc/format_params', "\\OkCoder\\ApiDoc\\Controller@format_params" );
+\think\facade\Route::get( 'doc/assets', "\\ric\\apidoc\\Controller@assets", [ 'deny_ext' => 'php|.htacess' ] );
+\think\facade\Route::get( 'doc/module', "\\ric\\apidoc\\Controller@module" );
+\think\facade\Route::get( 'doc/action', "\\ric\\apidoc\\Controller@action" );
+\think\facade\Route::get( 'doc/document', "\\ric\\apidoc\\Controller@document" );
+\think\facade\Route::any( 'doc/login$', "\\ric\\apidoc\\Controller@login" );
+\think\facade\Route::any( 'doc/format_params', "\\ric\\apidoc\\Controller@format_params" );
