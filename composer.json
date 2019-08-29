@@ -1,0 +1,31 @@
+{
+  "name": "ric/thinkphp6-apidoc",
+  "description": "thinkphp6 API文档自动生成",
+  "license": "Apache-2.0",
+  "version": "v1.0.0",
+  "type": "think-extend",
+  "authors": [
+    {
+      "name": "ric",
+      "email": "596868636@qq.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "ric\\apidoc\\": "src/"
+    },
+    "files": [
+      "src/helper.php"
+    ]
+  },
+  "extra": {
+    "think": {
+      "config": {
+        "aipdoc": "src/config/aipdoc.php"
+      }
+    }
+  }
+}
