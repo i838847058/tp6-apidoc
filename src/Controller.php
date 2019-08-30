@@ -33,10 +33,9 @@ class Controller
         'html' => 'text/html,application/xhtml+xml,*/*',
     ];
 
-    public function __construct(Request $request = null)
+    public function __construct()
     {
         //有些程序配置了默认json问题
-        $this->request = $request;
         $this->assets_path = __DIR__ .'/assets/';
         $this->doc = new Doc(config('apidoc'));
 
@@ -44,20 +43,19 @@ class Controller
             'view_path'      => __DIR__ . '/view/',
             'default_filter' => ''
         ];
-        $this->view = new View($config);
-        if (!$this->view->engine) {
-            $this->view->init($config);
-        }
+
+        $this->view = View::config($config);
+
         $this->view->assign('web', $this->doc->__get());
 
-        $this->assets_path = $this->doc->__get("static_path") ?: '/doc/assets';
+        $this->assets_path = $this->doc->__get("static_path") ?: '/static/doc';
         $this->view->assign('assets', $this->assets_path);
-        $this->root = $this->request->root() ?: $this->request->domain();
+        $this->root = request()->root() ?: request()->domain();
 
-        if ($this->request->session('doc.is_login') !== $this->doc->__get('password')
+        if (request()->session('doc.is_login') !== $this->doc->__get('password')
             && $this->doc->__get('password')
-            && $this->request->url() !== '/doc/login'
-            && stristr($this->request->url(), '/assets') == false
+            && request()->url() !== '/doc/login'
+            && stristr(request()->url(), '/assets') == false
         ) {
             session('doc.request_url', Request::url(true));
             header('location:/doc/login');
@@ -67,9 +65,8 @@ class Controller
         // 序言文档
         $this->view->assign('document', $this->doc->__get('document'));
 
-        // 版本号
-        $this->view->assign('versions', $this->doc->__get('controller'));
-
+        // 分类
+        $this->view->assign('versions', $this->doc->__get('api_type'));
 
         // 左侧菜单
         $this->view->assign('menu', $this->doc->get_api_list(input('version', 0, 'intval')));
@@ -79,8 +76,8 @@ class Controller
     public function assets()
     {
         $assets_path = __DIR__ . '/assets/';
-        $path        = str_replace("doc/assets", "", $this->request->pathinfo());
-        $ext         = $this->request->ext();
+        $path        = str_replace("doc/assets", "", request()->pathinfo());
+        $ext         = request()->ext();
         if ($ext) {
             $type    = "text/html";
             $content = file_get_contents($assets_path . $path);
@@ -93,18 +90,11 @@ class Controller
 
 
     /** 显示模板
-     * @param $name
-     * @param array $vars
-     * @param array $config
-     * ----------------------------------------------------
-     * @author Victor
-     * @QQ 1046512080
-     * @url http://www.sucailong.com / http://www.i5920.com
      */
     protected function template($name, $vars = [], $config = [])
     {
         $vars = array_merge(['root' => $this->root], $vars);
-        return $this->view->fetch($name, $vars, $config);
+        return $this->view->fetch($name);
     }
 
 
@@ -128,14 +118,14 @@ class Controller
 
     public function action($name = '')
     {
-        if ($this->request->isAjax()) {
+        if (request()->isAjax()) {
             list($class, $action) = explode("::", $name);
             $data = $this->doc->get_api_detail($class, $action);
             # 全局header
             $data['_header'] = $this->doc->__get('header');
             # 全局参数
             $data['_params'] = $this->doc->__get('params');
-            $this->result($data, 0, 'SUCCESS');
+            return totrue($data);
         } else {
             return $this->template('action');
         }
@@ -150,9 +140,9 @@ class Controller
     // debug 格式化参数
     public function format_params()
     {
-        $header           = $this->format($this->request->param('header'));
-        $header["Cookie"] = $this->request->param('cookie');
-        $params           = $this->format($this->request->param('params'));
+        $header           = $this->format(request()->param('header'));
+        $header["Cookie"] = request()->param('cookie');
+        $params           = $this->format(request()->param('params'));
         return ['params' => $params, 'header' => $header];
     }
 
@@ -168,18 +158,14 @@ class Controller
         return $result;
     }
 
-
-    use \traits\controller\Jump;
-
     public function login()
     {
-        if ($this->request->isPost()) {
+        if (request()->isPost()) {
             if (input('post.password') != $this->doc->__get('password')) {
-                $this->error('您输入的密码不正确');
-                exit();
+                return redirect('','密码错误');
             } else {
                 session('doc.is_login', input('post.password'));
-                $this->success('登录成功', session('doc.request_url') ?: '/doc');
+                return redirect(session('doc.request_url') ?: '/doc');
             }
         } else {
             if (session('doc.is_login') == $this->doc->__get('password')) {

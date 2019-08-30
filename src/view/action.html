@@ -54,6 +54,10 @@
             </td>
         </tr>
         <tr>
+            <td>后台方法</td>
+            <td>{{ d.href }}</td>
+        </tr>
+        <tr>
             <td>请求方式</td>
             <td>{{ d.method ? d.method : '-' }}</td>
         </tr>
@@ -81,6 +85,7 @@
                         <th>名称</th>
                         <th>类型</th>
                         <th>默认值</th>
+                        <th>验证规则</th>
                         <th>说明</th>
                     </tr>
                     </thead>
@@ -90,6 +95,7 @@
                         <td>{{ v.name }}</td>
                         <td>{{ v.type }}</td>
                         <td>{{ v.default }}</td>
+                        <td>{{ v.valid }}</td>
                         <td>{{ v.desc }}</td>
                     </tr>
                     {{# }); }}
@@ -113,7 +119,7 @@
                     <tr>
                        
                         <th>名称</th>
-<th>类型</th>
+                        <th>类型</th>
                         <th>默认值</th>
                         <th>说明</th>
                     </tr>
@@ -285,7 +291,7 @@
 
 
         $.get(window.location.href, function (response) {
-            if (response.code == 0) {
+            if (response.status == 100) {
                 render(tpl1.innerHTML, 'view_tpl1', response.data);
                 render(tpl2.innerHTML, 'view_tpl2', response.data);
                 render(tpl3.innerHTML, 'view_tpl3', response.data);

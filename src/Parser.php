@@ -41,11 +41,11 @@ class Parser
     {
         $_arr = explode('\\', strtolower($object->class));
         if (count($_arr) === 5) {
-            $url = url($_arr[1] . '/' . $_arr[3] . '.' . $_arr[4] . '/' . $object->name, '', '', true);
+            $url = url($_arr[1] . '/' . $_arr[3] . '.' . $_arr[4] . '/' . $object->name, [], '', true);
         } else {
-            $url = url($_arr[1] . '/' . $_arr[3] . '/' . $object->name, '', '', true);
+            $url = url($_arr[1] . '/' . $_arr[3] . '/' . $object->name, [], '', true);
         }
-        return $url;
+        return (string)$url;
     }
     /**
      * 注释字符串转数组
@@ -85,7 +85,7 @@ class Parser
                     $newArr[$item[0]] = isset($item[1]) ? $item[1] : '-';
                     break;
                 case 'url':
-                    @eval('$newArr["url"]=(' . $item[1] . ');');
+                    @eval('$newArr["url"]=$item[1];');
                     break;
                 case 'param':
                 case 'return':
@@ -93,7 +93,8 @@ class Parser
                         'type' => $item[1],
                         'name' => preg_replace('/\$/i', '', $item[2]),
                         'default' => isset($item[3]) ? $item[3] : '-',
-                        'desc' => isset($item[4]) ? $item[4] : '-'
+                        'desc' => isset($item[4]) ? $item[4] : '-',
+                        'valid' => isset($item[5]) ? $item[5] : '-'
                     ];
                     break;
             }
