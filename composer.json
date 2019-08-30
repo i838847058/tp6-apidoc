@@ -2,7 +2,7 @@
   "name": "ric/thinkphp6-apidoc",
   "description": "thinkphp6 API文档自动生成",
   "license": "Apache-2.0",
-  "version": "v1.0.1",
+  "version": "v1.0.0",
   "keywords": [
     "think",
     "thinkphp6",
@@ -33,6 +33,9 @@
       },
       "public": {
         "static/doc": "src/assets"
+      },
+      "route": {
+        "doc/route.php": "src/route.php"
       }
     }
   }
