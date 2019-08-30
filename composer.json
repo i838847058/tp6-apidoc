@@ -29,7 +29,7 @@
   "extra": {
     "think": {
       "config": {
-        "aipdoc": "src/config/aipdoc.php"
+        "apidoc": "src/config/apidoc.php"
       },
       "public": {
         "static/doc": "src/assets"
