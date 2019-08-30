@@ -2,7 +2,7 @@
   "name": "ric/thinkphp6-apidoc",
   "description": "thinkphp6 API文档自动生成",
   "license": "Apache-2.0",
-  "version": "v1.0.0",
+  "version": "v1.0.1",
   "keywords": [
     "think",
     "thinkphp6",
@@ -19,7 +19,7 @@
   ],
   "require": {
     "php": ">=7.1.0",
-    "ric/helper":"^1.0"
+    "ric/thinkphp6-helper":"^1.0"
   },
   "autoload": {
     "psr-4": {
