@@ -142,8 +142,18 @@ class Controller
     {
         $header           = $this->format(request()->param('header'));
         $header["Cookie"] = request()->param('cookie');
-        $params           = $this->format(request()->param('params'));
-        return ['params' => $params, 'header' => $header];
+
+        $url = request()->param('url');
+        $method = request()->param('method');
+
+        $data = $this->format(request()->param('params'));
+
+        if($method == 'API'){
+            $arr = explode('::',$url);
+            return totrue(api($arr[0],$arr[1],$data));
+        }
+
+        return totrue(['params' => $data, 'header' => $header]);
     }
 
     private function format($data = [])

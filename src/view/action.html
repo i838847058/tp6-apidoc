@@ -48,9 +48,7 @@
         <tr>
             <td>接口地址</td>
             <td>
-                <a target="_blank" href="{{ d.url }}">
                     {{ d.url }}
-                </a>
             </td>
         </tr>
         <tr>
@@ -146,20 +144,30 @@
         <div class="layui-form-item">
             <label class="layui-form-label">接口地址</label>
             <div class="layui-input-block">
+                {{# if(d.method == 'api'){ }}
+                <input type="url" name="url" required readonly="readonly"
+                       autocomplete="off" class="layui-input"
+                       value="{{ d.href ? d.href : ''}}">
+                {{# }else{ }}
                 <input type="url" name="url" required lay-verify="url" placeholder="请输入接口地址"
                        autocomplete="off" class="layui-input"
                        value="{{ d.url ? d.url : ''}}">
+                {{# } }}
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">请求方式</label>
             <div class="layui-input-inline">
                 <select name="method" lay-verify="required">
-                    {{# layui.each(['GET','POST','PUT','DELETE'],function(index,item){ }}
-                    <option value="{{ item }}"
-                            {{# if(item.trim()== d.method.trim()){ }}selected{{# } }}>{{ item }}
-                    </option>
-                    {{# }); }}
+                    {{# if(d.method == 'api'){ }}
+                        <option value="API" selected}}>API</option>
+                    {{# }else{ }}
+                        {{# layui.each(['GET','POST','PUT','DELETE'],function(index,item){ }}
+                        <option value="{{ item }}"
+                                {{# if(item.trim()== d.method.trim()){ }}selected{{# } }}>{{ item }}
+                        </option>
+                        {{# }); }}
+                    {{# } }}
                 </select>
             </div>
         </div>
@@ -348,33 +356,55 @@
                     type: 'POST',
                     data: data.field,
                     success: function (response) {
-                        $.ajax({
-                            url: data.field.url,
-                            type: data.field.method,
-                            headers: response.header,
-                            data: response.params,
+                        if(data.field.method != 'API'){
+                            $.ajax({
+                                url: data.field.url,
+                                type: data.field.method,
+                                headers: response.data.header,
+                                data: response.data.params,
 
-                            complete: function (XHR) {
-                                layer.close(index);
-                                var html = "";
-                                if (XHR.readyState == 4 && XHR.status == 200) {
-                                    html = "<pre class='layui-code' lay-skin='notepad' lay-encode='true' style='margin: 0'>" + writeHtml(XHR.responseJSON) + "</pre>";
-                                } else {
-                                    html = XHR.responseText;
+                                complete: function (XHR) {
+                                    layer.close(index);
+                                    var html = "";
+                                    if (XHR.readyState == 4 && XHR.status == 200) {
+                                        html = "<pre class='layui-code' lay-skin='notepad' lay-encode='true' style='margin: 0'>" + writeHtml(XHR.responseJSON) + "</pre>";
+                                    } else {
+                                        html = XHR.responseText;
+                                    }
+                                    layer.style(layer.open({
+                                        type: 1,
+                                        shade: false,
+                                        area: '700px',
+                                        maxHeight: document.body.clientHeight - 100,
+                                        title: false, //不显示标题
+                                        content: html
+                                    }), {
+                                        top: '80px'
+                                    });
                                 }
-                                layer.style(layer.open({
-                                    type: 1,
-                                    shade: false,
-                                    area: '700px',
-                                    maxHeight: document.body.clientHeight - 100,
-                                    title: false, //不显示标题
-                                    content: html
-                                }), {
-                                    top: '80px'
-                                });
+                            })
+                        }
+                    },
+                    complete: function (XHR) {
+                        if(data.field.method == 'API') {
+                            layer.close(index);
+                            var html = "";
+                            if (XHR.readyState == 4 && XHR.status == 200) {
+                                html = "<pre class='layui-code' lay-skin='notepad' lay-encode='true' style='margin: 0'>" + writeHtml(XHR.responseJSON) + "</pre>";
+                            } else {
+                                html = XHR.responseText;
                             }
-                        })
-
+                            layer.style(layer.open({
+                                type: 1,
+                                shade: false,
+                                area: '700px',
+                                maxHeight: document.body.clientHeight - 100,
+                                title: false, //不显示标题
+                                content: html
+                            }), {
+                                top: '80px'
+                            });
+                        }
                     }
                 });
                 return false;

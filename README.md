@@ -10,6 +10,11 @@
 composer require ric/thinkphp6-apidoc
 ```
 
+由于不想写路由和样式移动，所以安装后，请自己手动把：
+./vendor/ric/thinkphp6-apidoc/src/route.php 复制到  ./route/doc/route.php
+./vendor/ric/thinkphp6-apidoc/src/assets 目录 复制为 ./public/static/doc 目录
+
+
 ####2、配置参数
 - 安装好扩展后在 config\apidoc.php 配置文件
 

@@ -2,6 +2,9 @@
 namespace ric\apidoc;
 
 
+use think\facade\Event;
+use think\facade\Route;
+
 class Parser
 {
 
@@ -22,12 +25,14 @@ class Parser
      */
     public function parse_action($object)
     {
-        $comment = $this->parseCommentArray($this->comment2Array($object));
+        $comment = $this->parse_class($object);
         if (!isset($comment['url']) || !$comment['url']) {
-            $comment['url'] = $this->buildUrl($object);
+            $buildUrl = $this->buildUrl($object);
+            $comment['url'] = $buildUrl['url'];
+            $comment['method'] = $buildUrl['method'];
         }
         if (!isset($comment['method']) || !$comment['method']) {
-            $comment['method'] = 'GET';
+            $comment['method'] = '未定义method注释，内容应用默认api方法调用，对外api默认POST';
         }
         $comment['href'] = "{$object->class}::{$object->name}";
         return $comment;
@@ -40,12 +45,23 @@ class Parser
     private function buildUrl($object)
     {
         $_arr = explode('\\', strtolower($object->class));
-        if (count($_arr) === 5) {
-            $url = url($_arr[1] . '/' . $_arr[3] . '.' . $_arr[4] . '/' . $object->name, [], '', true);
-        } else {
-            $url = url($_arr[1] . '/' . $_arr[3] . '/' . $object->name, [], '', true);
+
+        $routeList = Route::getRuleList();
+
+        $url = url($_arr[1] . '/' . $_arr[3] . '/' . $object->name, [], '', true);
+
+        if($_arr[2]=='api'){
+            $url = "api('{$object->class}','{$object->name}','\$data')";
+            $method = 'api';
+        }else{
+            if (count($_arr) === 5) {
+                $url = url($_arr[1] . '/' . $_arr[3] . '.' . $_arr[4] . '/' . $object->name, [], '', true);
+            } else {
+                $url = url($_arr[1] . '/' . $_arr[3] . '/' . $object->name, [], '', true);
+            }
         }
-        return (string)$url;
+
+        return ['url'=>(string)$url,'method'=>$method??''];
     }
     /**
      * 注释字符串转数组
