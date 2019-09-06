@@ -172,7 +172,7 @@ class Controller
     {
         if (request()->isPost()) {
             if (input('post.password') != $this->doc->__get('password')) {
-                return redirect('','密码错误');
+                return redirect('',['密码错误']);
             } else {
                 session('doc.is_login', input('post.password'));
                 return redirect(session('doc.request_url') ?: '/doc');
