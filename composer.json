@@ -2,7 +2,7 @@
   "name": "ric/thinkphp6-apidoc",
   "description": "thinkphp6 API文档自动生成",
   "license": "Apache-2.0",
-  "version": "v1.0.2",
+  "version": "v1.0.3",
   "keywords": [
     "think",
     "thinkphp6",

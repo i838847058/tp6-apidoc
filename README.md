@@ -36,3 +36,9 @@ think6 json输出、数据验证辅助工具 ：ric/thinkphp6-helper
 
 ## 联系方式：
 https://www.jeekup.com/
+
+## 更新日志
+
+>> 20190912 v1.0.3
+
+* 修复了最近两天6.0视图模块更新导致报错问题

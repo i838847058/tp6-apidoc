@@ -44,12 +44,13 @@ class Controller
             'default_filter' => ''
         ];
 
-        $this->view = View::config($config);
+        View::config( [ 'view_path' => __DIR__ . '/view/','view_suffix'  => 'html' ] );
 
-        $this->view->assign('web', $this->doc->__get());
+        View::assign('web', $this->doc->__get());
+
 
         $this->assets_path = $this->doc->__get("static_path") ?: '/static/doc';
-        $this->view->assign('assets', $this->assets_path);
+        View::assign('assets', $this->assets_path);
         $this->root = request()->root() ?: request()->domain();
 
         if (request()->session('doc.is_login') !== $this->doc->__get('password')
@@ -63,13 +64,16 @@ class Controller
         }
 
         // 序言文档
-        $this->view->assign('document', $this->doc->__get('document'));
+        View::assign('document', $this->doc->__get('document'));
+
 
         // 分类
-        $this->view->assign('versions', $this->doc->__get('api_type'));
+        View::assign('versions', $this->doc->__get('api_type'));
+
 
         // 左侧菜单
-        $this->view->assign('menu', $this->doc->get_api_list(input('version', 0, 'intval')));
+        View::assign('menu', $this->doc->get_api_list(input('version', 0, 'intval')));
+
     }
 
     # 解析资源
@@ -94,7 +98,9 @@ class Controller
     protected function template($name, $vars = [], $config = [])
     {
         $vars = array_merge(['root' => $this->root], $vars);
-        return $this->view->fetch($name);
+        // print_r(View($name));exit;
+        return View($name);
+
     }
 
 
@@ -111,7 +117,8 @@ class Controller
             $doc        = new Parser();
             # 解析类
             $class_doc = $doc->parse_class($doc_str);
-            $this->view->assign('data', $class_doc);
+            View::assign('data', $class_doc);
+
         }
         return $this->template('module');
     }
@@ -133,7 +140,7 @@ class Controller
 
     public function document($name = 'explain')
     {
-        $this->view->assign('data', $this->doc->__get('document')[$name]);
+        View::assign('data', $this->doc->__get('document')[$name]);
         return $this->template('doc_' . $name);
     }
 
