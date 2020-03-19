@@ -1,9 +1,9 @@
 <?php
 return [
-    'title'         => 'APIDOC',                   # 文档title
+    'title'         => 'API接口文档',                   # 文档title
     'version'       => '1.0.0',                               # 文档版本
-    'copyright'     => 'Powered By JeekUp',          # 版权信息
-    'password'      => '123123',                                  # 访问密码，为空不需要密码
+    'copyright'     => 'Powered By ShuXian',          # 版权信息
+    'password'      => '',                                  # 访问密码，为空不需要密码
     'document'      => [
         "explain" => [
             'name' => '说明',
